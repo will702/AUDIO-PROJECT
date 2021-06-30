@@ -1,0 +1,78 @@
+
+<CustomPopup@Popup>:
+    auto_dismiss: False
+    title:"SELECTED"
+    size_hint:0.8,0.4
+    text:""
+    BoxLayout:
+        orientation:'vertical'
+
+        Label:
+            halign:'center'
+            text:root.text
+            size_hint_y:0.3
+
+        BoxLayout:
+
+            size_hint_y:0.4
+
+
+            Widget:
+                size_hint_x:None
+                width:50
+            Button:
+                text: 'Dismiss'
+                size_hint_y:0.3
+                size_hint_x:None
+                width:200
+                on_release: root.dismiss()
+                halign:"left"
+            Widget:
+                size_hint_x:None
+                width:50
+
+            Button:
+                text: 'Play Sound'
+                size_hint_y:0.3
+                size_hint_x:None
+                width:200
+                on_release:
+                    app.send(argumen=root.text)
+                    root.dismiss()
+                halign:"right"
+
+
+
+<Screen1>:
+#:import platform kivy.utils.platform
+
+
+
+    MDBoxLayout:
+        orientation:'vertical'
+        TextInput:
+            hint_text:"Enter Link to Download"
+            id:link
+            size_hint: 1, None
+            height: "30dp"
+            multiline:False
+
+        TooltipMDIconButton:
+            icon:"download"
+            tooltip_text:"Press To Download From Link"
+            on_release:app.download()
+            pos_hint:{"center_x":0.5}
+
+
+        ScrollView:
+            FileChooserListView:
+                id: filechooser
+                on_submit: app.selected(*args)
+                filters:['*.wav']
+                path:'/sdcard' if platform == 'android' else '/Users/willson/downloads'
+
+
+
+
+
+<TooltipMDIconButton@MDIconButton+MDTooltip>
