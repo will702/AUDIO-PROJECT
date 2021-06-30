@@ -9,7 +9,7 @@ from mainscreen.audio import player
 class Service(object):
     SERVER = OSCThreadServer()
     SERVER.listen('localhost', port=3000, default=True)
-
+    a = 0 
     CLIENT = OSCClient('localhost', 3002)
     if platform == 'android':
 
@@ -21,12 +21,25 @@ class Service(object):
     def __init__(self):
 
         self.SERVER.bind(b'/ping', self.ping)
+        self.SERVER.bind(b'/pause',self.pause)
+        self.SERVER.bind(b'/play_again',self.play_again)
+        self.SERVER.bind(b'/loop_again', self.loop_again)
+
         while True:
             sleep(1)
 
+    def loop_again(self):
+        self.a+=1
+        if self.a%2 !=0:
 
+            player.do_loop(True)
+        else:
+            player.do_loop(False)
+    def play_again(self):
+        player.resume()
+    def pause(self):
+        player.pause()
 
-    
     def ping(self,*_):
         'answer to ping messages'
         filename = _[0].decode('utf-8')

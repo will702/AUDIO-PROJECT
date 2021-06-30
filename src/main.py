@@ -1,28 +1,20 @@
 # coding: utf8
-
-
 from kivymd.app import MDApp
 from kivy.lang import Builder
-
 from kivy.utils import platform
-from pytube import YouTube
-import os
 from jnius import autoclass
 
-
-from mainscreen.mainscreen import MainScreen
-import threading
-
-import sys
-sys.path.append("/".join(x for x in __file__.split("/")[:-1]))
-from os.path import dirname,realpath
-
-folder = dirname(realpath(__file__))
-Builder.load_file(folder+'/mainscreen/loadingpopup.kv')
 from oscpy.client import OSCClient
 from oscpy.server import OSCThreadServer
 from kivy.core.window import Window
 from kivy.factory import Factory
+from src import MainScreen
+
+if platform == 'android':
+    from android.permissions import request_permissions, Permission
+
+    request_permissions([Permission.READ_EXTERNAL_STORAGE, Permission.WRITE_EXTERNAL_STORAGE])
+
 if platform == 'macosx':
     Window.size = (450,750)
 
@@ -41,7 +33,12 @@ class ClientServerApp(MDApp):
         self.theme_cls.theme_style = "Dark"
         self.service = None
         # self.start_service()
+        self.data =   {
 
+                "Pause":"pause",
+                "Play Again":"play",
+                "Loop":"repeat",
+                }
         self.server = server = OSCThreadServer()
         server.listen(
             address=b'localhost',
@@ -56,13 +53,17 @@ class ClientServerApp(MDApp):
         self.screen = Builder.load_file('main.kv')
         self.start_service()
         self.asw = ''
-        self.popup = Factory.LoadingPopup()
-        self.popup.background = folder+'/mainscreen/transparent_image.png'
+
         return self.screen
-    def display_loading_screen(self,*args):
-        self.popup.open()
-    def hide_loading_screen(self,*args):
-        self.popup.dismiss()
+    def call(self,button):
+        if button.icon == 'play':
+            self.play_again()
+        if button.icon == 'pause':
+            self.pause()
+        if button.icon == 'repeat':
+            self.set_loop()
+
+
     def selected(self, filename, asw, budi):
         for i in range(1):
             #Making For I in range to use continue
@@ -96,9 +97,8 @@ class ClientServerApp(MDApp):
                 if self.asw != asw[0]:
                     self.asw = asw[0]
 
-                    self.stop_service()
 
-                    self.start_service()
+
                     self.popup = Factory.CustomPopup()
 
                     self.popup.text = asw[0]
@@ -144,40 +144,16 @@ class ClientServerApp(MDApp):
                     "service start not implemented on this platform"
                 )
             self.service = None
+    def set_loop(self):
+        self.client.send_message(b'/loop_again', [])
 
+    def play_again(self):
+        self.client.send_message(b'/play_again',[])
+    def pause(self):
+        self.client.send_message(b'/pause',[])
     def send(self, *args, argumen):
         print(argumen)
         self.client.send_message(b'/ping', [f'{argumen}'.encode('utf-8')])
-
-    def download(self,*args):
-
-        self.start_loading()
-        self.processing()
-        self.hide_loading()
-    def download_methods(self):
-        text = self.screen.ids.mainscreen.ids.screen1.ids.link.text.strip()
-
-        yt = YouTube(text)
-        video = yt.streams.filter(only_audio=True).first()
-        downloaded_file = video.download()
-        base, ext = os.path.splitext(downloaded_file)
-        new_file = base + '.mp3'
-
-        os.rename(downloaded_file, new_file)
-    def processing(self):
-        t1 = threading.Thread(target=self.download_methods)
-        t1.start()
-
-    def start_loading(self):
-        t1 = threading.Thread(target=self.display_loading_screen)
-        t1.start()
-
-    def hide_loading(self):
-        t1 = threading.Thread(target=self.hide_loading_screen)
-        t1.start()
-
-
-
 
 
 if __name__ == '__main__':

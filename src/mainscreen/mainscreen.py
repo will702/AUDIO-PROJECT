@@ -6,17 +6,11 @@ sys.path.append("/".join(x for x in __file__.split("/")[:-1]))
 from os.path import dirname,realpath
 
 folder = dirname(realpath(__file__))
-Builder.load_file(folder+'/loadingpopup.kv')
+
 
 from screen1 import Screen1
-
-
 Builder.load_file(folder+"/screen1.kv")
-
 Builder.load_file(folder+"/mainscreen.kv")
-
-
-
 class MainScreen(MDScreen):
 
 
