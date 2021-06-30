@@ -7,6 +7,7 @@ from kivy.utils import platform
 from mainscreen.audio import player
 
 class Service(object):
+
     SERVER = OSCThreadServer()
     SERVER.listen('localhost', port=3000, default=True)
     a = 0 
@@ -43,18 +44,39 @@ class Service(object):
     def ping(self,*_):
         'answer to ping messages'
         filename = _[0].decode('utf-8')
+
         self.filename = filename
         self.send_date()
     def run_music(self):
         if platform == 'macosx':
             if self.filename != '':
                 from kivy.core.audio import SoundLoader
-                SoundLoader.load(self.filename).play()
+                filename = SoundLoader.load(self.filename)
+                self.CLIENT.send_message(
+                    b'/message',
+                    [
+                      f'{filename.length}'
+                            .encode('utf8'),
+
+                    ],
+                )
+                filename.play()
 
         if platform == 'android':
             if self.filename != '':
-                player.play(self.filename)
+                from kivy.core.audio import SoundLoader
+                filename = SoundLoader.load(self.filename)
 
+
+                self.CLIENT.send_message(
+                    b'/message',
+                    [
+                        f'{filename.length}'
+                            .encode('utf8'),
+                    ],
+                )
+
+                player.play(self.filename)
                 # from jnius import autoclass
                 #
                 # MediaPlayer = autoclass('android.media.MediaPlayer')
@@ -79,6 +101,7 @@ class Service(object):
 
 
         self.run_music()
+
 
 
 

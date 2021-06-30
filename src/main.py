@@ -1,4 +1,5 @@
 # coding: utf8
+
 from kivymd.app import MDApp
 from kivy.lang import Builder
 from kivy.utils import platform
@@ -8,7 +9,12 @@ from oscpy.client import OSCClient
 from oscpy.server import OSCThreadServer
 from kivy.core.window import Window
 from kivy.factory import Factory
+from kivymd.uix.slider import MDSlider
+from kivy.properties import ObjectProperty
+from mainscreen.audio import  player
 from src import MainScreen
+
+
 
 if platform == 'android':
     from android.permissions import request_permissions, Permission
@@ -25,6 +31,26 @@ SERVICE_NAME = u'{packagename}.Service{servicename}'.format(
 )
 
 
+
+class MySlider(MDSlider):
+    sound = ObjectProperty(None)
+
+    def on_touch_up(self, touch):
+        if touch.grab_current == self:
+            # call super method and save its return
+            ret_val = super(MySlider, self).on_touch_up(touch)
+
+            # adjust position of sound
+            self.sound.seek(self.max * self.value_normalized)
+
+            # if sound is stopped, restart it
+            if self.sound.is_playing() == False:
+                MDApp.get_running_app().start_play()
+
+            # return the saved return value
+            return ret_val
+        else:
+            return super(MySlider, self).on_touch_up(touch)
 
 class ClientServerApp(MDApp):
     a = 0
@@ -45,6 +71,7 @@ class ClientServerApp(MDApp):
             port=3002,
             default=True,
         )
+        server.bind(b'/message', self.get_duration)
 
 
 
@@ -152,8 +179,52 @@ class ClientServerApp(MDApp):
     def pause(self):
         self.client.send_message(b'/pause',[])
     def send(self, *args, argumen):
-        print(argumen)
+
         self.client.send_message(b'/ping', [f'{argumen}'.encode('utf-8')])
+    def get_duration(self,*_):
+        'answer to ping messages'
+        filename = _[0].decode('utf-8')
+
+
+        self.duration = filename
+
+        if platform == 'android':
+            try:
+                self.screen.ids.mainscreen.ids.screen1.remove_widget(self.slider)
+
+            except:
+                pass
+
+            self.slider = MySlider(min=0, max=float(self.duration), value=0, sound=player,
+                                   pos_hint={'center_x': 0.50, 'center_y': 0.6},
+                                   size_hint=(0.6, 0.1))
+            self.screen.ids.mainscreen.ids.screen1.add_widget(self.slider)
+
+    def start_play(self, *args):
+        # play the sound
+        from kivy.clock import Clock
+        if player.is_playing() == False:
+            player.resume()
+
+
+        if self.updater is None:
+            # schedule updates to the slider
+            self.updater = Clock.schedule_interval(self.update_slider, 0.5)
+
+    def update_slider(self, dt):
+        # update slider
+        self.slider.value = self.duration
+
+        # if the sound has finished, stop the updating
+        if player.is_playing() == False:
+
+
+
+            self.updater.cancel()
+            self.updater = None
+
+
+
 
 
 if __name__ == '__main__':
