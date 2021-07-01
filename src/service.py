@@ -3,15 +3,17 @@
 from time import  sleep
 from oscpy.server import OSCThreadServer
 from oscpy.client import OSCClient
+
 from kivy.utils import platform
 from mainscreen.audio import player
-
+from mainscreen.desk_audio import  pemutar
 class Service(object):
 
     SERVER = OSCThreadServer()
     SERVER.listen('localhost', port=3000, default=True)
-    a = 0 
     CLIENT = OSCClient('localhost', 3002)
+    a = 0 
+
     if platform == 'android':
 
         filename = ''
@@ -31,15 +33,30 @@ class Service(object):
 
     def loop_again(self):
         self.a+=1
-        if self.a%2 !=0:
+        if platform == 'android':
+            if self.a%2 !=0:
 
-            player.do_loop(True)
+                player.do_loop(True)
+            else:
+                player.do_loop(False)
         else:
-            player.do_loop(False)
+            if self.a%2 !=0:
+
+                pemutar.do_loop(True)
+            else:
+                pemutar.do_loop(False)
+
     def play_again(self):
-        player.resume()
+        if platform == 'android':
+            player.resume()
+        else:
+            pemutar.resume()
+
     def pause(self):
-        player.pause()
+        if platform =='android':
+            player.pause()
+        else:
+            pemutar.pause()
 
     def ping(self,*_):
         'answer to ping messages'
@@ -48,46 +65,28 @@ class Service(object):
         self.filename = filename
         self.send_date()
     def run_music(self):
-        if platform == 'macosx':
+        if platform != 'android':
             if self.filename != '':
-                from kivy.core.audio import SoundLoader
-                filename = SoundLoader.load(self.filename)
+                pemutar.play(self.filename)
                 self.CLIENT.send_message(
-                    b'/message',
-                    [
-                      f'{filename.length}'
-                            .encode('utf8'),
-
-                    ],
-                )
-                filename.play()
+        b'/message',
+        [
+            'ok'.encode('utf-8'),
+        ],)
 
         if platform == 'android':
             if self.filename != '':
 
 
+
+
+
+                player.play(self.filename)
                 self.CLIENT.send_message(
                     b'/message',
                     [
-                        'Worked'
-                            .encode('utf8'),
-                    ],
-                )
-
-                player.play(self.filename)
-                # from jnius import autoclass
-                #
-                # MediaPlayer = autoclass('android.media.MediaPlayer')
-                # AudioManager = autoclass('android.media.AudioManager')
-                # mPlayer = MediaPlayer()
-                # mPlayer.setDataSource(self.filename)
-                #
-                # mPlayer.setAudioStreamType(AudioManager.STREAM_NOTIFICATION)
-                # mPlayer.prepare()
-                #
-                # mPlayer.start()
-                # sleep(mPlayer.getDuration())
-                # mPlayer.stop()
+                        'ok'.encode('utf-8'),
+                    ], )
 
 
 

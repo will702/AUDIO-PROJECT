@@ -1,0 +1,13 @@
+Basically I need everything google music or Spotify musicplayer code does….
+Music control (rewind, next play, pause, loop)
+Get music and store in string list
+Get audio file metadata
+Music notification (artcover, music control buttons)
+Search the music list
+Make music offline if music is online (download)
+Headset control
+Android features like (mediaSession, audioFocus)
+Make feature available for old and new sdk
+Basic musicplayer features I will pay you for help with some special features I have in mind
+
+And can you try iOS or no?

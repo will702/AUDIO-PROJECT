@@ -64,16 +64,25 @@
                 on_submit: app.selected(*args)
                 filters:['*.wav']
                 path:'/sdcard' if platform == 'android' else '/Users/willson/downloads'
-        MDFloatingActionButtonSpeedDial:
-            callback: app.call
+        MDBoxLayout:
 
-            data:app.data
+            MDRaisedButton:
+                text:"PAUSE"
+                size_hint_x:0.33
+                on_release:app.pause()
+                md_bg_color:69/255,100/255,92/255,1
+            MDRaisedButton:
+                text:'RESUME'
+                size_hint_x:0.33
+                on_release:app.play_again()
+                md_bg_color:69/255,100/255,145/255,1
 
-            root_button_anim: True
-            hint_animation: True
+            MDRaisedButton:
+                size_hint_x:0.33
+                text:"REPEAT"
+                on_release:app.set_loop()
+                md_bg_color:64/255,150/255,145/255,1
 
-            bg_hint_color: 70/255, 137/255, 142/255,1
-            pos_hint:{'center_x':0.5,'center_y':0.2}
 
 
 

@@ -9,9 +9,10 @@ from oscpy.client import OSCClient
 from oscpy.server import OSCThreadServer
 from kivy.core.window import Window
 from kivy.factory import Factory
-from kivymd.uix.slider import MDSlider
 from kivy.properties import ObjectProperty
-from mainscreen.audio import  player
+from mainscreen.desk_audio import pemutar
+
+
 from src import MainScreen
 
 
@@ -31,6 +32,8 @@ SERVICE_NAME = u'{packagename}.Service{servicename}'.format(
 )
 
 
+from kivymd.uix.slider import MDSlider
+
 
 class MySlider(MDSlider):
     sound = ObjectProperty(None)
@@ -44,14 +47,13 @@ class MySlider(MDSlider):
             self.sound.seek(self.max * self.value_normalized)
 
             # if sound is stopped, restart it
-            if self.sound.is_playing() == False:
+            if self.sound.state == 'stop':
                 MDApp.get_running_app().start_play()
 
             # return the saved return value
             return ret_val
         else:
             return super(MySlider, self).on_touch_up(touch)
-
 class ClientServerApp(MDApp):
     a = 0
 
@@ -71,24 +73,15 @@ class ClientServerApp(MDApp):
             port=3002,
             default=True,
         )
-        server.bind(b'/message', self.get_duration)
 
-
-
-
+        server.bind(b'/message', self.display_message)
         self.client = OSCClient(b'localhost', 3000)
         self.screen = Builder.load_file('main.kv')
         self.start_service()
         self.asw = ''
 
         return self.screen
-    def call(self,button):
-        if button.icon == 'play':
-            self.play_again()
-        if button.icon == 'pause':
-            self.pause()
-        if button.icon == 'repeat':
-            self.set_loop()
+
 
 
     def selected(self, filename, asw, budi):
@@ -180,33 +173,14 @@ class ClientServerApp(MDApp):
         self.client.send_message(b'/pause',[])
     def send(self, *args, argumen):
 
+
         self.client.send_message(b'/ping', [f'{argumen}'.encode('utf-8')])
-    def get_duration(self,*_):
-        'answer to ping messages'
 
-
-
-
-        self.duration = player.get_duration()
-
-        if platform == 'android':
-            try:
-                self.screen.ids.mainscreen.ids.screen1.remove_widget(self.slider)
-
-            except:
-                pass
-
-            self.slider = MySlider(min=0, max=float(self.duration), value=0, sound=player,
-                                   pos_hint={'center_x': 0.50, 'center_y': 0.6},
-                                   size_hint=(0.6, 0.1))
-            self.screen.ids.mainscreen.ids.screen1.add_widget(self.slider)
 
     def start_play(self, *args):
         # play the sound
+        pemutar.resume()
         from kivy.clock import Clock
-        if player.is_playing() == False:
-            player.resume()
-
 
         if self.updater is None:
             # schedule updates to the slider
@@ -214,18 +188,24 @@ class ClientServerApp(MDApp):
 
     def update_slider(self, dt):
         # update slider
-        self.slider.value = self.duration
+        self.slider.value = pemutar.current_position()
 
         # if the sound has finished, stop the updating
-        if player.is_playing() == False:
-
-
-
+        if pemutar.is_playing() == 'stop':
             self.updater.cancel()
             self.updater = None
 
+    def display_message(self, message):
+        print(message.decode('utf-8'))
+        try:
+            self.slider = MySlider(min=0, max=pemutar.get_duration(), value=0, sound=pemutar.sound,
+                                   pos_hint={'center_x': 0.50, 'center_y': 0.6},
+                                   size_hint=(0.6, 0.1))
+            self.screen.ids.mainscreen.ids.screen1.add_widget(self.slider)
 
-
+            self.updater = None
+        except AttributeError:
+            print("There is no content")
 
 
 if __name__ == '__main__':
