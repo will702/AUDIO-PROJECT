@@ -3,17 +3,16 @@
 from kivymd.app import MDApp
 from kivy.lang import Builder
 from kivy.utils import platform
-
-
+from mainscreen.audio import player
 from oscpy.client import OSCClient
 from oscpy.server import OSCThreadServer
 from kivy.core.window import Window
 from kivy.factory import Factory
 from kivy.properties import ObjectProperty
 from mainscreen.desk_audio import pemutar
-import os
 
-os.environ['KIVY_AUDIO'] = 'ffpyplayer'
+
+
 
 
 from mainscreen.mainscreen import MainScreen
@@ -25,8 +24,11 @@ if platform == 'android':
 
 
 
+
     request_permissions([Permission.READ_EXTERNAL_STORAGE, Permission.WRITE_EXTERNAL_STORAGE])
     from jnius import autoclass
+
+
 
 if platform == 'macosx':
     Window.size = (450,750)
@@ -37,7 +39,6 @@ SERVICE_NAME = u'{packagename}.Service{servicename}'.format(
     servicename=u'Pong'
 )
 
-from kivy.app import App 
 from kivymd.uix.slider import MDSlider
 
 
@@ -54,12 +55,13 @@ class MySlider(MDSlider):
 
             # if sound is stopped, restart it
             print(self.sound.state)
-            if self.sound.state == 'stop':
+            if self.sound.is_playing() == 'stop':
                 MDApp.get_running_app().start_play()
 
             # return the saved return value
             print(ret_val)
             return ret_val
+
         else:
             return super(MySlider, self).on_touch_up(touch)
 class ClientServerApp(MDApp):
@@ -187,7 +189,10 @@ class ClientServerApp(MDApp):
 
     def start_play(self, *args):
         # play the sound
-        pemutar.play()
+        if platform == 'android':
+            player.play()
+        else:
+            pemutar.play()
    
        
         from kivy.clock import Clock
@@ -208,7 +213,7 @@ class ClientServerApp(MDApp):
             self.updater = None
 
     def display_message(self, message):
-
+        print(message.decode('utf-8'))
         try:
 
 
@@ -216,6 +221,14 @@ class ClientServerApp(MDApp):
 
             if platform != 'macosx':
                 self.slider = MySlider(min=0, max=pemutar.get_duration(), value=0, sound=pemutar.sound,
+                                       pos_hint={'center_x': 0.50, 'center_y': 0.6},
+                                       size_hint=(0.6, 0.1))
+                self.screen.ids.mainscreen.ids.screen1.add_widget(self.slider)
+
+                self.updater = None
+                self.start_play()
+            if platform == 'android':
+                self.slider = MySlider(min=0, max=player.get_duration(), value=0, sound=player,
                                        pos_hint={'center_x': 0.50, 'center_y': 0.6},
                                        size_hint=(0.6, 0.1))
                 self.screen.ids.mainscreen.ids.screen1.add_widget(self.slider)

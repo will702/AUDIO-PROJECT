@@ -1,16 +1,18 @@
+
 from kivy.core.audio import SoundLoader
+
 class Player(object):
 
 
 
-    content = ''
+    content = None
     def set(self):
         try:
             self.sound.stop()
             self.sound.reset()
         except:
             pass
-        if self.content != '':
+        if self.content != None :
             self.sound = SoundLoader.load(self.content)
 
     def play(self):
