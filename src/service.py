@@ -64,14 +64,12 @@ class Service(object):
 
         if platform == 'android':
             if self.filename != '':
-                from kivy.core.audio import SoundLoader
-                filename = SoundLoader.load(self.filename)
 
 
                 self.CLIENT.send_message(
                     b'/message',
                     [
-                        f'{filename.length}'
+                        'Worked'
                             .encode('utf8'),
                     ],
                 )

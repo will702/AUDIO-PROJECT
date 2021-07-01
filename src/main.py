@@ -183,10 +183,11 @@ class ClientServerApp(MDApp):
         self.client.send_message(b'/ping', [f'{argumen}'.encode('utf-8')])
     def get_duration(self,*_):
         'answer to ping messages'
-        filename = _[0].decode('utf-8')
 
 
-        self.duration = filename
+
+
+        self.duration = player.get_duration()
 
         if platform == 'android':
             try:
