@@ -33,18 +33,14 @@ class Service(object):
 
     def loop_again(self):
         self.a+=1
-        if platform == 'android':
-            if self.a%2 !=0:
 
-                pemutar.do_loop(True)
-            else:
-                pemutar.do_loop(False)
+
+
+        if self.a%2 !=0:
+
+            pemutar.do_loop(True)
         else:
-            if self.a%2 !=0:
-
-                pemutar.do_loop(True)
-            else:
-                pemutar.do_loop(False)
+            pemutar.do_loop(False)
 
     def play_again(self):
 
