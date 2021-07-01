@@ -5,7 +5,7 @@ from oscpy.server import OSCThreadServer
 from oscpy.client import OSCClient
 
 from kivy.utils import platform
-from mainscreen.audio import player
+
 from mainscreen.desk_audio import  pemutar
 class Service(object):
 
@@ -36,9 +36,9 @@ class Service(object):
         if platform == 'android':
             if self.a%2 !=0:
 
-                player.do_loop(True)
+                pemutar.do_loop(True)
             else:
-                player.do_loop(False)
+                pemutar.do_loop(False)
         else:
             if self.a%2 !=0:
 
@@ -47,16 +47,12 @@ class Service(object):
                 pemutar.do_loop(False)
 
     def play_again(self):
-        if platform == 'android':
-            player.resume()
-        else:
-            pemutar.resume()
+
+        pemutar.resume()
 
     def pause(self):
-        if platform =='android':
-            player.pause()
-        else:
-            pemutar.pause()
+
+        pemutar.pause()
 
     def ping(self,*_):
         'answer to ping messages'
@@ -68,6 +64,7 @@ class Service(object):
         if platform != 'android':
             if self.filename != '':
                 pemutar.content = (self.filename)
+
                 pemutar.set()
                 self.CLIENT.send_message(
         b'/message',
@@ -79,18 +76,14 @@ class Service(object):
             if self.filename != '':
 
 
+                pemutar.content = (self.filename)
 
-
-
-                player.play(self.filename)
+                pemutar.set()
                 self.CLIENT.send_message(
                     b'/message',
                     [
                         'ok'.encode('utf-8'),
                     ], )
-
-
-
 
     def send_date(self):
 
