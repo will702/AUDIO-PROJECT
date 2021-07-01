@@ -5,6 +5,11 @@ class Player(object):
 
     content = ''
     def set(self):
+        try:
+            self.sound.stop()
+            self.sound.reset()
+        except:
+            pass
         if self.content != '':
             self.sound = SoundLoader.load(self.content)
 

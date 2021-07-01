@@ -14,11 +14,6 @@ class Service(object):
     CLIENT = OSCClient('localhost', 3002)
     a = 0 
 
-    if platform == 'android':
-
-        filename = ''
-    else:
-        filename = ''
 
 
     def __init__(self):

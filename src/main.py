@@ -11,7 +11,9 @@ from kivy.core.window import Window
 from kivy.factory import Factory
 from kivy.properties import ObjectProperty
 from mainscreen.desk_audio import pemutar
+import os
 
+os.environ['KIVY_AUDIO'] = 'ffpyplayer'
 
 
 from mainscreen.mainscreen import MainScreen
@@ -212,14 +214,16 @@ class ClientServerApp(MDApp):
 
 
 
+            if platform != 'macosx':
+                self.slider = MySlider(min=0, max=pemutar.get_duration(), value=0, sound=pemutar.sound,
+                                       pos_hint={'center_x': 0.50, 'center_y': 0.6},
+                                       size_hint=(0.6, 0.1))
+                self.screen.ids.mainscreen.ids.screen1.add_widget(self.slider)
 
-            self.slider = MySlider(min=0, max=pemutar.get_duration(), value=0, sound=pemutar.sound,
-                                   pos_hint={'center_x': 0.50, 'center_y': 0.6},
-                                   size_hint=(0.6, 0.1))
-            self.screen.ids.mainscreen.ids.screen1.add_widget(self.slider)
-
-            self.updater = None
-            self.start_play()
+                self.updater = None
+                self.start_play()
+            if platform == 'macosx':
+                pemutar.play()
         except AttributeError:
             print("There is no content")
 
