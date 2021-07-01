@@ -73,8 +73,8 @@ class Service(object):
         #     f'{self.filename}'.encode('utf-8'),
         # ],)
             if platform == 'android':
-                player.content = self.filename
-                player.play()
+
+                player.play(self.filename)
 
                 self.CLIENT.send_message(
                     b'/message',

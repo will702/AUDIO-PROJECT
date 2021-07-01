@@ -8,19 +8,23 @@ class Player(object):
         MediaPlayer = autoclass('android.media.MediaPlayer')
         AudioManager = autoclass('android.media.AudioManager')
         mPlayer = MediaPlayer()
-        content = ''
+        content = None
+
+
         def raw(self):
             return self.mPlayer
 
-        def play(self):
+        def play(self,content):
 
             try:
                 self.mPlayer.stop()
                 self.mPlayer.reset()
             except:
                 pass
+            self.content = content
             self.mPlayer.setDataSource(self.content)
             self.mPlayer.prepare()
+            self.mPlayer.start()
 
 
         def pause(self):

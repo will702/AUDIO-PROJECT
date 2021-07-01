@@ -24,7 +24,7 @@ if platform == 'android':
 
 
     request_permissions([Permission.READ_EXTERNAL_STORAGE, Permission.WRITE_EXTERNAL_STORAGE])
-    from jnius import autoclass
+from jnius import autoclass
 
 
 
@@ -214,31 +214,33 @@ class ClientServerApp(MDApp):
 
     def display_message(self, message):
         print(message.decode('utf-8'))
-        try:
 
 
 
-            #
-            # if platform != 'macosx':
-            #     self.slider = MySlider(min=0, max=pemutar.get_duration(), value=0, sound=pemutar.sound,
-            #                            pos_hint={'center_x': 0.50, 'center_y': 0.6},
-            #                            size_hint=(0.6, 0.1))
-            #     self.screen.ids.mainscreen.ids.screen1.add_widget(self.slider)
-            #
-            #     self.updater = None
-            #     self.start_play()
 
+        #
+        # if platform != 'macosx':
+        #     self.slider = MySlider(min=0, max=pemutar.get_duration(), value=0, sound=pemutar.sound,
+        #                            pos_hint={'center_x': 0.50, 'center_y': 0.6},
+        #                            size_hint=(0.6, 0.1))
+        #     self.screen.ids.mainscreen.ids.screen1.add_widget(self.slider)
+        #
+        #     self.updater = None
+        #     self.start_play()
+
+        if player.get_duration() == None:
+            print(player.get_duration())
+        else:
+            print(player.get_duration())
             self.slider = MySlider(min=0, max=player.get_duration(), value=0, sound=player,
                                    pos_hint={'center_x': 0.50, 'center_y': 0.6},
                                    size_hint=(0.6, 0.1))
             self.screen.ids.mainscreen.ids.screen1.add_widget(self.slider)
 
-            self.updater = None
-            self.start_play()
+        self.updater = None
+        self.start_play()
             # if platform == 'macosx':
             #     pemutar.play()
-        except AttributeError:
-            print("There is no content")
 
 
 if __name__ == '__main__':
