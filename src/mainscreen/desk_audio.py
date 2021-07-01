@@ -3,9 +3,10 @@ class Player(object):
 
 
 
-
+    content = ''
     def set(self):
-        self.sound = SoundLoader.load(self.content)
+        if self.content != '':
+            self.sound = SoundLoader.load(self.content)
 
     def play(self):
         

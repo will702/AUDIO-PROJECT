@@ -13,6 +13,7 @@ from kivy.properties import ObjectProperty
 from mainscreen.desk_audio import pemutar
 
 
+
 from mainscreen.mainscreen import MainScreen
 
 
@@ -204,7 +205,7 @@ class ClientServerApp(MDApp):
             self.updater = None
 
     def display_message(self, message):
-        print(message.decode('utf-8'))
+
         try:
 
 

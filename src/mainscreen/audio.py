@@ -1,4 +1,5 @@
 from kivy.utils import platform
+
 class Player(object):
     if platform == 'android':
         from jnius import autoclass
