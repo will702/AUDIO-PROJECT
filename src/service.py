@@ -67,7 +67,8 @@ class Service(object):
     def run_music(self):
         if platform != 'android':
             if self.filename != '':
-                pemutar.play(self.filename)
+                pemutar.content = (self.filename)
+                pemutar.set()
                 self.CLIENT.send_message(
         b'/message',
         [

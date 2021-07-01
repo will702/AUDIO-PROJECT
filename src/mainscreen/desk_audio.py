@@ -4,14 +4,11 @@ class Player(object):
 
 
 
-
-    def play(self, content):
-        self.content = str(content)
-        try:
-            self.sound = None
-        except:
-            pass
+    def set(self):
         self.sound = SoundLoader.load(self.content)
+
+    def play(self):
+        
 
         self.sound.play()
     def pause(self):

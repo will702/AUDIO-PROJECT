@@ -3,7 +3,7 @@
 from kivymd.app import MDApp
 from kivy.lang import Builder
 from kivy.utils import platform
-from jnius import autoclass
+
 
 from oscpy.client import OSCClient
 from oscpy.server import OSCThreadServer
@@ -13,14 +13,16 @@ from kivy.properties import ObjectProperty
 from mainscreen.desk_audio import pemutar
 
 
-from src import MainScreen
+from mainscreen.mainscreen import MainScreen
 
 
 
 if platform == 'android':
     from android.permissions import request_permissions, Permission
 
+
     request_permissions([Permission.READ_EXTERNAL_STORAGE, Permission.WRITE_EXTERNAL_STORAGE])
+    from jnius import autoclass
 
 if platform == 'macosx':
     Window.size = (450,750)
@@ -31,7 +33,7 @@ SERVICE_NAME = u'{packagename}.Service{servicename}'.format(
     servicename=u'Pong'
 )
 
-
+from kivy.app import App 
 from kivymd.uix.slider import MDSlider
 
 
@@ -47,10 +49,12 @@ class MySlider(MDSlider):
             self.sound.seek(self.max * self.value_normalized)
 
             # if sound is stopped, restart it
+            print(self.sound.state)
             if self.sound.state == 'stop':
                 MDApp.get_running_app().start_play()
 
             # return the saved return value
+            print(ret_val)
             return ret_val
         else:
             return super(MySlider, self).on_touch_up(touch)
@@ -173,13 +177,15 @@ class ClientServerApp(MDApp):
         self.client.send_message(b'/pause',[])
     def send(self, *args, argumen):
 
-
+        self.argumen = argumen 
         self.client.send_message(b'/ping', [f'{argumen}'.encode('utf-8')])
 
 
     def start_play(self, *args):
         # play the sound
-        pemutar.resume()
+        pemutar.play()
+   
+       
         from kivy.clock import Clock
 
         if self.updater is None:
@@ -188,22 +194,28 @@ class ClientServerApp(MDApp):
 
     def update_slider(self, dt):
         # update slider
-        self.slider.value = pemutar.current_position()
+        print('lol')
+        self.slider.value = pemutar.sound.get_pos()
+        print(pemutar.sound.get_pos())
 
         # if the sound has finished, stop the updating
-        if pemutar.is_playing() == 'stop':
+        if pemutar.sound.state == 'stop':
             self.updater.cancel()
             self.updater = None
 
     def display_message(self, message):
         print(message.decode('utf-8'))
         try:
+
+
+
             self.slider = MySlider(min=0, max=pemutar.get_duration(), value=0, sound=pemutar.sound,
                                    pos_hint={'center_x': 0.50, 'center_y': 0.6},
                                    size_hint=(0.6, 0.1))
             self.screen.ids.mainscreen.ids.screen1.add_widget(self.slider)
 
             self.updater = None
+            self.start_play()
         except AttributeError:
             print("There is no content")
 
