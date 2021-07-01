@@ -8,7 +8,7 @@ from os.path import dirname,realpath
 folder = dirname(realpath(__file__))
 
 
-from mainscreen.screen1 import Screen1 
+from screen1 import Screen1
 Builder.load_file(folder+"/screen1.kv")
 Builder.load_file(folder+"/mainscreen.kv")
 class MainScreen(MDScreen):

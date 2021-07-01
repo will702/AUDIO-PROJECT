@@ -6,7 +6,7 @@ from time import  sleep
 from oscpy.server import OSCThreadServer
 from oscpy.client import OSCClient
 
-from mainscreen.desk_audio import  pemutar
+
 class Service(object):
 
     SERVER = OSCThreadServer()
@@ -29,29 +29,28 @@ class Service(object):
     def loop_again(self):
         self.a+=1
 
+        #
+        # if platform != 'android':
+        #     if self.a%2 !=0:
+        #
+        #         pemutar.do_loop(True)
+        #     else:
+        #         pemutar.do_loop(False)
 
-        if platform != 'android':
-            if self.a%2 !=0:
+        if self.a % 2 != 0:
 
-                pemutar.do_loop(True)
-            else:
-                pemutar.do_loop(False)
-        if platform == 'android':
-            if self.a % 2 != 0:
-
-                player.do_loop(True)
-            else:
-                player.do_loop(False)
+            player.do_loop(True)
+        else:
+            player.do_loop(False)
 
     def play_again(self):
-        if platform != 'android':
-            pemutar.resume()
+        # if platform != 'android':
+        #     pemutar.resume()
         if platform == 'android':
             player.resume()
 
     def pause(self):
-        if platform != 'android':
-            pemutar.pause()
+
         if platform == 'android':
             player.pause()
 
@@ -63,18 +62,19 @@ class Service(object):
         self.send_date()
     def run_music(self):
 
-        if self.filename != '':
-            if platform != 'android':
-                pemutar.content = (self.filename)
-
-                pemutar.set()
-                self.CLIENT.send_message(
-        b'/message',
-        [
-            f'{self.filename}'.encode('utf-8'),
-        ],)
+        # if self.filename != '':
+        #     # if platform != 'android':
+        #     #     pemutar.content = (self.filename)
+        #
+        #         pemutar.set()
+        #         self.CLIENT.send_message(
+        # b'/message',
+        # [
+        #     f'{self.filename}'.encode('utf-8'),
+        # ],)
             if platform == 'android':
                 player.content = self.filename
+                player.play()
 
                 self.CLIENT.send_message(
                     b'/message',

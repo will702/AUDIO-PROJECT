@@ -9,8 +9,6 @@ from oscpy.server import OSCThreadServer
 from kivy.core.window import Window
 from kivy.factory import Factory
 from kivy.properties import ObjectProperty
-from mainscreen.desk_audio import pemutar
-
 
 
 
@@ -189,10 +187,11 @@ class ClientServerApp(MDApp):
 
     def start_play(self, *args):
         # play the sound
-        if platform == 'android':
-            player.play()
-        else:
-            pemutar.play()
+
+        player.resume()
+
+
+
    
        
         from kivy.clock import Clock
@@ -204,11 +203,12 @@ class ClientServerApp(MDApp):
     def update_slider(self, dt):
         # update slider
         print('lol')
-        self.slider.value = pemutar.sound.get_pos()
-        print(pemutar.sound.get_pos())
+
+        self.slider.value = player.current_position()
+
 
         # if the sound has finished, stop the updating
-        if pemutar.sound.state == 'stop':
+        if player.is_playing() == 'stop':
             self.updater.cancel()
             self.updater = None
 
@@ -218,25 +218,25 @@ class ClientServerApp(MDApp):
 
 
 
+            #
+            # if platform != 'macosx':
+            #     self.slider = MySlider(min=0, max=pemutar.get_duration(), value=0, sound=pemutar.sound,
+            #                            pos_hint={'center_x': 0.50, 'center_y': 0.6},
+            #                            size_hint=(0.6, 0.1))
+            #     self.screen.ids.mainscreen.ids.screen1.add_widget(self.slider)
+            #
+            #     self.updater = None
+            #     self.start_play()
 
-            if platform != 'macosx':
-                self.slider = MySlider(min=0, max=pemutar.get_duration(), value=0, sound=pemutar.sound,
-                                       pos_hint={'center_x': 0.50, 'center_y': 0.6},
-                                       size_hint=(0.6, 0.1))
-                self.screen.ids.mainscreen.ids.screen1.add_widget(self.slider)
+            self.slider = MySlider(min=0, max=player.get_duration(), value=0, sound=player,
+                                   pos_hint={'center_x': 0.50, 'center_y': 0.6},
+                                   size_hint=(0.6, 0.1))
+            self.screen.ids.mainscreen.ids.screen1.add_widget(self.slider)
 
-                self.updater = None
-                self.start_play()
-            if platform == 'android':
-                self.slider = MySlider(min=0, max=player.get_duration(), value=0, sound=player,
-                                       pos_hint={'center_x': 0.50, 'center_y': 0.6},
-                                       size_hint=(0.6, 0.1))
-                self.screen.ids.mainscreen.ids.screen1.add_widget(self.slider)
-
-                self.updater = None
-                self.start_play()
-            if platform == 'macosx':
-                pemutar.play()
+            self.updater = None
+            self.start_play()
+            # if platform == 'macosx':
+            #     pemutar.play()
         except AttributeError:
             print("There is no content")
 

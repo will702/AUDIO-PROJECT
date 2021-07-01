@@ -21,7 +21,7 @@ class Player(object):
                 pass
             self.mPlayer.setDataSource(self.content)
             self.mPlayer.prepare()
-            self.mPlayer.start()
+
 
         def pause(self):
             self.mPlayer.pause()
