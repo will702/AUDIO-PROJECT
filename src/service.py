@@ -29,7 +29,7 @@ class Service(object):
 
 
         while True:
-            sleep(1)
+            pass
 
 
 

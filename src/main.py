@@ -217,15 +217,24 @@ class ClientServerApp(MDApp):
 
 
 
+        try:
+
+            if player.status() != None:
+
+                self.slider = MySlider(min=0, max=player.loader.length, value=0, sound=player.loader,
+                                       pos_hint={'center_x': 0.50, 'center_y': 0.6},
+                                       size_hint=(0.6, 0.1))
+
+                self.screen.ids.mainscreen.ids.screen1.add_widget(self.slider)
+
+                self.updater = None
+                self.start_play()
 
 
-        self.slider = MySlider(min=0, max=player.loader.length, value=0, sound=player.loader,
-                               pos_hint={'center_x': 0.50, 'center_y': 0.6},
-                               size_hint=(0.6, 0.1))
-        self.screen.ids.mainscreen.ids.screen1.add_widget(self.slider)
+        except AttributeError:
 
-        self.updater = None
-        self.start_play()
+            print(player.loader.length)
+
 
 
 

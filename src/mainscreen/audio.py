@@ -1,6 +1,9 @@
 from kivy.core.audio import SoundLoader
 class Player:
     loader = None
+    def status(self):
+        return self.loader
+
     def load(self,content):
         if self.loader != None:
             try:
@@ -9,6 +12,9 @@ class Player:
             except:
                 pass
         self.loader =SoundLoader.load(content)
+
+
+
 
     def play(self):
 
