@@ -234,7 +234,7 @@ class ClientServerApp(MDApp):
                                    pos_hint={'center_x': 0.50, 'center_y': 0.6},
                                    size_hint=(0.6, 0.1))
 
-            self.screen.ids.mainscreen.ids.screen1.add_widget(self.slider)
+            self.screen.ids.mainscreen.ids.screen1.ids.container.add_widget(self.slider)
 
             self.updater = None
             self.start_play()
