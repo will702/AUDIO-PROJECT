@@ -1,15 +1,18 @@
 # coding: utf8
+import os
+os.environ['KIVY_AUDIO'] = 'android'
 
 from kivymd.app import MDApp
 from kivy.lang import Builder
 from kivy.utils import platform
-from mainscreen.audio import player
+
 from oscpy.client import OSCClient
 from oscpy.server import OSCThreadServer
 from kivy.core.window import Window
 from kivy.factory import Factory
 from kivy.properties import ObjectProperty
-from kivymd.toast import toast
+
+from mainscreen.audio import player
 
 
 from mainscreen.mainscreen import MainScreen
@@ -38,7 +41,6 @@ SERVICE_NAME = u'{packagename}.Service{servicename}'.format(
 
 from kivymd.uix.slider import MDSlider
 
-
 class MySlider(MDSlider):
     sound = ObjectProperty(None)
 
@@ -48,20 +50,17 @@ class MySlider(MDSlider):
             ret_val = super(MySlider, self).on_touch_up(touch)
 
             # adjust position of sound
-
             self.sound.seek(self.max * self.value_normalized)
 
             # if sound is stopped, restart it
-
-            if self.sound.is_playing() == 'stop':
+            if self.sound.state == 'stop':
                 MDApp.get_running_app().start_play()
 
             # return the saved return value
-
             return ret_val
-
         else:
             return super(MySlider, self).on_touch_up(touch)
+
 class ClientServerApp(MDApp):
     a = 0
 
@@ -187,15 +186,8 @@ class ClientServerApp(MDApp):
 
     def start_play(self, *args):
         # play the sound
-        if player.is_playing()=='stop':
-            player.resume()
-
-
-
-
-   
-       
         from kivy.clock import Clock
+        player.loader.play()
 
         if self.updater is None:
             # schedule updates to the slider
@@ -203,22 +195,15 @@ class ClientServerApp(MDApp):
 
     def update_slider(self, dt):
         # update slider
-
-        try:
-            if player.current_position() != None:
-
-                self.slider.value = player.current_position()
-
-        except:
-            toast("Slidebar not supported for ur device ")
+        self.slider.value = player.loader.get_pos()
 
         # if the sound has finished, stop the updating
-        if player.is_playing() == 'stop':
+        if player.loader.state == 'stop':
             self.updater.cancel()
             self.updater = None
 
     def display_message(self, message):
-        filename = (message.decode('utf-8'))
+
         try:
             self.screen.ids.mainscreen.ids.screen1.remove_widget(self.slider)
         except AttributeError:
@@ -229,19 +214,12 @@ class ClientServerApp(MDApp):
 
 
 
-        from kivy.core.audio import SoundLoader
-        self.a = SoundLoader.load(filename)
-        try:
-            print(player.get_duration())
-        except:
-            toast("MediaPlayer Duration Not Supported")
 
 
 
 
 
-
-        self.slider = MySlider(min=0, max=self.a.length, value=0, sound=player,
+        self.slider = MySlider(min=0, max=player.loader.length, value=0, sound=player.loader,
                                pos_hint={'center_x': 0.50, 'center_y': 0.6},
                                size_hint=(0.6, 0.1))
         self.screen.ids.mainscreen.ids.screen1.add_widget(self.slider)

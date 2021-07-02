@@ -1,7 +1,9 @@
 'p4a example service using oscpy to communicate with main application.'
+import os
+os.environ['KIVY_AUDIO'] = 'android'
 
-from mainscreen.audio import  player
 from kivy.utils import platform
+from mainscreen.audio import player
 from time import  sleep
 from oscpy.server import OSCThreadServer
 from oscpy.client import OSCClient
@@ -48,20 +50,20 @@ class Service(object):
 
         if self.a % 2 != 0:
 
-            player.do_loop(True)
+            player.loader.loop = True
         else:
-            player.do_loop(False)
+            player.loader.loop = False
 
     def play_again(self):
         # if platform != 'android':
         #     pemutar.resume()
         if platform == 'android':
-            player.resume()
+            player.loader.play()
 
     def pause(self):
 
         if platform == 'android':
-            player.pause()
+            player.loader.stop()
 
     def ping(self,*_):
         'answer to ping messages'
@@ -104,25 +106,18 @@ class Service(object):
 
     def run_music(self):
 
-        # if self.filename != '':
-        #     # if platform != 'android':
-        #     #     pemutar.content = (self.filename)
-        #
-        #         pemutar.set()
-        #         self.CLIENT.send_message(
-        # b'/message',
-        # [
-        #     f'{self.filename}'.encode('utf-8'),
-        # ],)
-            if platform == 'android':
 
-                player.play(self.filename)
 
-                self.CLIENT.send_message(
-                    b'/message',
-                    [
-                        f'{self.filename}'.encode('utf-8'),
-                    ], )
+        if platform == 'android':
+
+            player.load(self.filename)
+
+
+            self.CLIENT.send_message(
+                b'/message',
+                [
+                    f'{self.filename}'.encode('utf-8'),
+                ], )
 
 
 
