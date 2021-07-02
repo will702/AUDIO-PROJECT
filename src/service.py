@@ -113,11 +113,11 @@ class Service(object):
             player.load(self.filename)
 
 
-            self.CLIENT.send_message(
-                b'/message',
-                [
-                    f'{self.filename}'.encode('utf-8'),
-                ], )
+        self.CLIENT.send_message(
+            b'/message',
+            [
+                f'{self.filename}'.encode('utf-8'),
+            ], )
 
 
 

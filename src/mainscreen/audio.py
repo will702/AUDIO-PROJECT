@@ -11,6 +11,8 @@ class Player:
                 self.loader.reset()
             except:
                 pass
+
+
         self.loader =SoundLoader.load(content)
 
 

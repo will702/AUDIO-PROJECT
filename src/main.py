@@ -63,7 +63,7 @@ class MySlider(MDSlider):
 
 class ClientServerApp(MDApp):
     a = 0
-
+    b = 0
     def build(self):
         self.theme_cls.theme_style = "Dark"
         self.service = None
@@ -172,6 +172,12 @@ class ClientServerApp(MDApp):
                 )
             self.service = None
     def set_loop(self):
+        self.b+=1
+        if self.b % 2 != 0:
+
+            player.loader.loop = True
+        else:
+            player.loader.loop = False
         self.client.send_message(b'/loop_again', [])
 
     def play_again(self):
@@ -203,7 +209,8 @@ class ClientServerApp(MDApp):
             self.updater = None
 
     def display_message(self, message):
-
+        message = message.decode('utf-8')
+        print(message)
         try:
             self.screen.ids.mainscreen.ids.screen1.remove_widget(self.slider)
         except AttributeError:
@@ -219,16 +226,16 @@ class ClientServerApp(MDApp):
 
         try:
 
-            if player.status() != None:
 
-                self.slider = MySlider(min=0, max=player.loader.length, value=0, sound=player.loader,
-                                       pos_hint={'center_x': 0.50, 'center_y': 0.6},
-                                       size_hint=(0.6, 0.1))
+            player.load(message)
+            self.slider = MySlider(min=0, max=player.loader.length, value=0, sound=player.loader,
+                                   pos_hint={'center_x': 0.50, 'center_y': 0.6},
+                                   size_hint=(0.6, 0.1))
 
-                self.screen.ids.mainscreen.ids.screen1.add_widget(self.slider)
+            self.screen.ids.mainscreen.ids.screen1.add_widget(self.slider)
 
-                self.updater = None
-                self.start_play()
+            self.updater = None
+            self.start_play()
 
 
         except AttributeError:
