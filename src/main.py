@@ -1,6 +1,11 @@
 # coding: utf8
 import os
-os.environ['KIVY_AUDIO'] = 'android'
+from os import environ
+if 'ANDROID_BOOTLOGO' in environ:
+    os.environ['KIVY_AUDIO'] = 'android'
+else:
+   print("!Android")
+
 from kivymd.app import MDApp
 from kivy.lang import Builder
 from kivy.utils import platform
@@ -63,16 +68,12 @@ class MySlider(MDSlider):
 class ClientServerApp(MDApp):
     a = 0
     b = 0
+    pilihan = 0
     def build(self):
         self.theme_cls.theme_style = "Dark"
         self.service = None
         # self.start_service()
-        self.data =   {
 
-                "Pause":"pause",
-                "Play Again":"play",
-                "Loop":"repeat",
-                }
         self.server = server = OSCThreadServer()
         server.listen(
             address=b'localhost',
@@ -172,13 +173,17 @@ class ClientServerApp(MDApp):
             self.service = None
     def send(self,argumen):
         self.display_message(argumen)
+
     def set_loop(self):
         self.b+=1
+        from kivymd.toast import toast
         if self.b % 2 != 0:
 
             player.loader.loop = True
+            toast("Loop Set To True")
         else:
             player.loader.loop = False
+            toast("Loop Set To False")
 
 
     def play_again(self):
@@ -214,7 +219,7 @@ class ClientServerApp(MDApp):
     def display_message(self, message):
 
         try:
-            self.screen.ids.mainscreen.ids.screen1.remove_widget(self.slider)
+            self.screen.ids.mainscreen.ids.screen1.ids.container.remove_widget(self.slider)
         except AttributeError:
             pass
 
