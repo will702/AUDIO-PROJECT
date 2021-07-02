@@ -1,10 +1,6 @@
 # coding: utf8
 import os
-
-
-
 os.environ['KIVY_AUDIO'] = 'android'
-
 from kivymd.app import MDApp
 from kivy.lang import Builder
 from kivy.utils import platform
