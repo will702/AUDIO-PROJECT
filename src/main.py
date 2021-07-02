@@ -182,11 +182,15 @@ class ClientServerApp(MDApp):
 
 
     def play_again(self):
+
         player.play()
+        player.loader.seek(self.last)
+
 
     def pause(self):
 
         player.loader.stop()
+        self.last = player.loader.get_pos()
 
 
     def start_play(self, *args):
