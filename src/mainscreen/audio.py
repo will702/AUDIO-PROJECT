@@ -2,8 +2,10 @@
 from kivy.utils import platform
 
 class Player(object):
+
     if platform == 'android':
         from jnius import autoclass
+
 
         MediaPlayer = autoclass('android.media.MediaPlayer')
         AudioManager = autoclass('android.media.AudioManager')
@@ -15,13 +17,15 @@ class Player(object):
             return self.mPlayer
 
         def play(self,content):
+            self.content = content
+
 
             try:
                 self.mPlayer.stop()
                 self.mPlayer.reset()
             except:
                 pass
-            self.content = content
+
             self.mPlayer.setDataSource(self.content)
             self.mPlayer.prepare()
             self.mPlayer.start()
@@ -58,7 +62,7 @@ class Player(object):
 
         def seek(self, value):
             try:
-                self.mPlayer.seekTo(int(value) * 1000)
+                self.mPlayer.seekTo(float(value) * 1000)
             except:
                 pass
 

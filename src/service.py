@@ -12,7 +12,9 @@ class Service(object):
     SERVER = OSCThreadServer()
     SERVER.listen('localhost', port=3000, default=True)
     CLIENT = OSCClient('localhost', 3002)
-    a = 0 
+    a = 0
+
+
 
 
 
@@ -23,11 +25,18 @@ class Service(object):
         self.SERVER.bind(b'/play_again',self.play_again)
         self.SERVER.bind(b'/loop_again', self.loop_again)
 
+
         while True:
             sleep(1)
 
+
+
+
+
+
     def loop_again(self):
         self.a+=1
+
 
         #
         # if platform != 'android':
@@ -60,6 +69,39 @@ class Service(object):
 
         self.filename = filename
         self.send_date()
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     def run_music(self):
 
         # if self.filename != '':

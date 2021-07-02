@@ -9,8 +9,7 @@ from oscpy.server import OSCThreadServer
 from kivy.core.window import Window
 from kivy.factory import Factory
 from kivy.properties import ObjectProperty
-
-
+from kivymd.toast import toast
 
 
 from mainscreen.mainscreen import MainScreen
@@ -49,15 +48,16 @@ class MySlider(MDSlider):
             ret_val = super(MySlider, self).on_touch_up(touch)
 
             # adjust position of sound
+
             self.sound.seek(self.max * self.value_normalized)
 
             # if sound is stopped, restart it
-            print(self.sound.state)
+
             if self.sound.is_playing() == 'stop':
                 MDApp.get_running_app().start_play()
 
             # return the saved return value
-            print(ret_val)
+
             return ret_val
 
         else:
@@ -113,7 +113,7 @@ class ClientServerApp(MDApp):
 
 
             if self.a == 1 :
-                # print(self.asw)
+
                 if self.asw == asw[0]:
                     self.popup = Factory.CustomPopup()
 
@@ -187,8 +187,9 @@ class ClientServerApp(MDApp):
 
     def start_play(self, *args):
         # play the sound
+        if player.is_playing()=='stop':
+            player.resume()
 
-        player.resume()
 
 
 
@@ -202,10 +203,14 @@ class ClientServerApp(MDApp):
 
     def update_slider(self, dt):
         # update slider
-        print('lol')
 
-        self.slider.value = player.current_position()
+        try:
+            if player.current_position() != None:
 
+                self.slider.value = player.current_position()
+
+        except:
+            toast("Slidebar not supported for ur device ")
 
         # if the sound has finished, stop the updating
         if player.is_playing() == 'stop':
@@ -213,34 +218,37 @@ class ClientServerApp(MDApp):
             self.updater = None
 
     def display_message(self, message):
-        print(message.decode('utf-8'))
+        filename = (message.decode('utf-8'))
+        try:
+            self.screen.ids.mainscreen.ids.screen1.remove_widget(self.slider)
+        except AttributeError:
+            pass
 
 
 
 
-        #
-        # if platform != 'macosx':
-        #     self.slider = MySlider(min=0, max=pemutar.get_duration(), value=0, sound=pemutar.sound,
-        #                            pos_hint={'center_x': 0.50, 'center_y': 0.6},
-        #                            size_hint=(0.6, 0.1))
-        #     self.screen.ids.mainscreen.ids.screen1.add_widget(self.slider)
-        #
-        #     self.updater = None
-        #     self.start_play()
 
-        if player.get_duration() == None:
+
+        from kivy.core.audio import SoundLoader
+        self.a = SoundLoader.load(filename)
+        try:
             print(player.get_duration())
-        else:
-            print(player.get_duration())
-            self.slider = MySlider(min=0, max=player.get_duration(), value=0, sound=player,
-                                   pos_hint={'center_x': 0.50, 'center_y': 0.6},
-                                   size_hint=(0.6, 0.1))
-            self.screen.ids.mainscreen.ids.screen1.add_widget(self.slider)
+        except:
+            toast("MediaPlayer Duration Not Supported")
+
+
+
+
+
+
+        self.slider = MySlider(min=0, max=self.a.length, value=0, sound=player,
+                               pos_hint={'center_x': 0.50, 'center_y': 0.6},
+                               size_hint=(0.6, 0.1))
+        self.screen.ids.mainscreen.ids.screen1.add_widget(self.slider)
 
         self.updater = None
         self.start_play()
-            # if platform == 'macosx':
-            #     pemutar.play()
+
 
 
 if __name__ == '__main__':
