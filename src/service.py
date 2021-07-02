@@ -22,10 +22,7 @@ class Service(object):
 
     def __init__(self):
 
-        self.SERVER.bind(b'/ping', self.ping)
-        self.SERVER.bind(b'/pause',self.pause)
-        self.SERVER.bind(b'/play_again',self.play_again)
-        self.SERVER.bind(b'/loop_again', self.loop_again)
+
 
 
         while True:
