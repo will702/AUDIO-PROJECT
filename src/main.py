@@ -1,9 +1,9 @@
 # coding: utf8
 import os
-import sys
-if sys.platform == 'android':
 
-    os.environ['KIVY_AUDIO'] = 'android'
+
+
+os.environ['KIVY_AUDIO'] = 'android'
 
 from kivymd.app import MDApp
 from kivy.lang import Builder
