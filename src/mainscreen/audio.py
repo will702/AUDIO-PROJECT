@@ -24,6 +24,8 @@ class Player:
 
 
         self.loader.play()
+    def pause(self):
+        self.loader.stop()
 
     def end(self):
         self.loader.stop()

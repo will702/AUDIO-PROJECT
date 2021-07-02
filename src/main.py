@@ -1,6 +1,9 @@
 # coding: utf8
 import os
-os.environ['KIVY_AUDIO'] = 'android'
+import sys
+if sys.platform == 'android':
+
+    os.environ['KIVY_AUDIO'] = 'android'
 
 from kivymd.app import MDApp
 from kivy.lang import Builder
@@ -81,7 +84,7 @@ class ClientServerApp(MDApp):
             default=True,
         )
 
-        server.bind(b'/message', self.display_message)
+
         self.client = OSCClient(b'localhost', 3000)
         self.screen = Builder.load_file('main.kv')
         self.start_service()
@@ -171,6 +174,8 @@ class ClientServerApp(MDApp):
                     "service start not implemented on this platform"
                 )
             self.service = None
+    def send(self,argumen):
+        self.display_message(argumen)
     def set_loop(self):
         self.b+=1
         if self.b % 2 != 0:
@@ -178,16 +183,14 @@ class ClientServerApp(MDApp):
             player.loader.loop = True
         else:
             player.loader.loop = False
-        self.client.send_message(b'/loop_again', [])
+
 
     def play_again(self):
-        self.client.send_message(b'/play_again',[])
-    def pause(self):
-        self.client.send_message(b'/pause',[])
-    def send(self, *args, argumen):
+        player.play()
 
-        self.argumen = argumen 
-        self.client.send_message(b'/ping', [f'{argumen}'.encode('utf-8')])
+    def pause(self):
+
+        player.loader.stop()
 
 
     def start_play(self, *args):
@@ -209,8 +212,7 @@ class ClientServerApp(MDApp):
             self.updater = None
 
     def display_message(self, message):
-        message = message.decode('utf-8')
-        print(message)
+
         try:
             self.screen.ids.mainscreen.ids.screen1.remove_widget(self.slider)
         except AttributeError:
