@@ -1,9 +1,11 @@
 # coding: utf8
 import os
 from os import environ
+#IF THERE IS ANDROID_BOOTLOGO IN DICT NAME ENVIRON SO IT WILL BE ANDROID
 if 'ANDROID_BOOTLOGO' in environ:
     os.environ['KIVY_AUDIO'] = 'android'
 else:
+    #IF NOT IT IS NOT ANDROID
    print("!Android")
 
 from kivymd.app import MDApp
