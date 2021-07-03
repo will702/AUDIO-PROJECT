@@ -6,7 +6,7 @@ if 'ANDROID_BOOTLOGO' in environ:
     os.environ['KIVY_AUDIO'] = 'android'
 else:
     #IF NOT IT IS NOT ANDROID
-   print("!Android")
+    print("!Android")
 
 from kivymd.app import MDApp
 from kivy.lang import Builder
