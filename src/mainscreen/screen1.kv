@@ -70,20 +70,31 @@
             size_hint_y:0.1
         MDBoxLayout:
             size_hint_y:0.2
+            MDRaisedButton:
+                text:'CHOOSE NEXT'
+                size_hint_x:0.2
+                md_bg_color:137/255,137/255,61/255,1
+                on_release:app.choose_next()
+            MDRaisedButton:
+                text:"LAST MUSIC"
+                size_hint_x:0.2
+                on_release:app.recent()
+
+
 
             MDRaisedButton:
                 text:"PAUSE"
-                size_hint_x:0.333
+                size_hint_x:0.2
                 on_release:app.pause()
                 md_bg_color:69/255,100/255,92/255,1
             MDRaisedButton:
                 text:'RESUME'
-                size_hint_x:0.333
+                size_hint_x:0.2
                 on_release:app.play_again()
                 md_bg_color:69/255,100/255,145/255,1
 
             MDRaisedButton:
-                size_hint_x:0.333
+                size_hint_x:0.2
                 text:"REPEAT"
                 on_release:app.set_loop()
                 md_bg_color:64/255,150/255,145/255,1

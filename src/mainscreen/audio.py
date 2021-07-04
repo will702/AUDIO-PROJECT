@@ -5,15 +5,17 @@ class Player:
         return self.loader
 
     def load(self,content):
+        self.filename  = content
         if self.loader != None:
             try:
                 self.loader.stop()
                 self.loader.reset()
+
             except:
                 pass
 
 
-        self.loader =SoundLoader.load(content)
+        self.loader = SoundLoader.load(content)
 
 
 

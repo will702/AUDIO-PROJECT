@@ -1,8 +1,11 @@
 Basically I need everything google music or Spotify musicplayer code does….
 
 Music control (rewind, next play, pause, loop)
+
 Get music and store in string list
+
 Get audio file metadata
+
 Music notification (artcover, muesic control buttons)
 
 Search the music list
