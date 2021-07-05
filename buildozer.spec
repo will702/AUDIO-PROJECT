@@ -89,6 +89,7 @@ fullscreen = 0
 android.permissions = INTERNET,WRITE_EXTERNAL_STORAGE,READ_EXTERNAL_STORAGE
 
 # (int) Android API to use
+android.presplash_lottie = "music-note.json"
 #android.api = 28
 
 # (int) Minimum API required. You will need to set the android.ndk.api to be as low as this value.
